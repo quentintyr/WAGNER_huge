@@ -4,6 +4,7 @@
  * Class View
  * The part that handles all the output
  */
+#[AllowDynamicProperties]
 class View
 {
     /**
@@ -21,9 +22,9 @@ class View
             }
         }
 
-        require Config::get('PATH_VIEW') . '_templates/header.php';
-        require Config::get('PATH_VIEW') . $filename . '.php';
-        require Config::get('PATH_VIEW') . '_templates/footer.php';
+        require Config::get("PATH_VIEW") . "_templates/header.php";
+        require Config::get("PATH_VIEW") . $filename . ".php";
+        require Config::get("PATH_VIEW") . "_templates/footer.php";
     }
 
     /**
@@ -46,13 +47,13 @@ class View
             }
         }
 
-        require Config::get('PATH_VIEW') . '_templates/header.php';
+        require Config::get("PATH_VIEW") . "_templates/header.php";
 
-        foreach($filenames as $filename) {
-            require Config::get('PATH_VIEW') . $filename . '.php';
+        foreach ($filenames as $filename) {
+            require Config::get("PATH_VIEW") . $filename . ".php";
         }
 
-        require Config::get('PATH_VIEW') . '_templates/footer.php';
+        require Config::get("PATH_VIEW") . "_templates/footer.php";
     }
 
     /**
@@ -68,7 +69,7 @@ class View
             }
         }
 
-        require Config::get('PATH_VIEW') . $filename . '.php';
+        require Config::get("PATH_VIEW") . $filename . ".php";
     }
 
     /**
@@ -88,11 +89,11 @@ class View
     {
         // echo out the feedback messages (errors and success messages etc.),
         // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
-        require Config::get('PATH_VIEW') . '_templates/feedback.php';
+        require Config::get("PATH_VIEW") . "_templates/feedback.php";
 
         // delete these messages (as they are not needed anymore and we want to avoid to show them twice
-        Session::set('feedback_positive', null);
-        Session::set('feedback_negative', null);
+        Session::set("feedback_positive", null);
+        Session::set("feedback_negative", null);
     }
 
     /**
@@ -104,8 +105,10 @@ class View
      *
      * @return bool Shows if the controller is used or not
      */
-    public static function checkForActiveController($filename, $navigation_controller)
-    {
+    public static function checkForActiveController(
+        $filename,
+        $navigation_controller,
+    ) {
         $split_filename = explode("/", $filename);
         $active_controller = $split_filename[0];
 
@@ -146,8 +149,10 @@ class View
      *
      * @return bool
      */
-    public static function checkForActiveControllerAndAction($filename, $navigation_controller_and_action)
-    {
+    public static function checkForActiveControllerAndAction(
+        $filename,
+        $navigation_controller_and_action,
+    ) {
         $split_filename = explode("/", $filename);
         $active_controller = $split_filename[0];
         $active_action = $split_filename[1];
@@ -156,7 +161,10 @@ class View
         $navigation_controller = $split_filename[0];
         $navigation_action = $split_filename[1];
 
-        if ($active_controller == $navigation_controller AND $active_action == $navigation_action) {
+        if (
+            $active_controller == $navigation_controller and
+            $active_action == $navigation_action
+        ) {
             return true;
         }
 
@@ -172,6 +180,6 @@ class View
      */
     public function encodeHTML($str)
     {
-        return htmlentities($str, ENT_QUOTES, 'UTF-8');
+        return htmlentities($str, ENT_QUOTES, "UTF-8");
     }
 }
