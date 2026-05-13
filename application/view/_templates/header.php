@@ -45,6 +45,9 @@
         <!-- my account -->
         <ul class="navigation right">
         <?php if (Session::userIsLoggedIn()) : ?>
+        <li <?php if (View::checkForActiveControllerAndAction($filename, "register/index")) { echo ' class="active" '; } ?> >
+            <a href="<?php echo Config::get('URL'); ?>register/index">Register</a>
+        </li>
             <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
                 <a href="<?php echo Config::get('URL'); ?>user/index">My Account</a>
                 <ul class="navigation-submenu">
