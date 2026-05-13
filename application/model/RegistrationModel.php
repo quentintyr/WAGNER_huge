@@ -43,8 +43,13 @@ class RegistrationModel
 
         // check if email already exists
         if (UserModel::doesEmailAlreadyExist($user_email)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN'));
-            $return = false;
+            if(empty($user_email)){
+                $return = true;
+            } else{
+                Session::add('feedback_negative', Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN'));
+                $return = false;
+            }
+
         }
 
         // if Username or Email were false, return false
@@ -54,7 +59,7 @@ class RegistrationModel
         $user_activation_hash = bin2hex(random_bytes(40));
 
         // write user data to database
-        if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash)) {
+        if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email = null, time(), $user_activation_hash)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
             return false; // no reason not to return false here
         }
@@ -67,10 +72,20 @@ class RegistrationModel
             return false;
         }
 
+        if(self::verifyNewUser($user_id, $user_activation_hash)){
+            return true;
+        }
+
         // send verification email
         if (self::sendVerificationEmail($user_id, $user_email, $user_activation_hash)) {
-            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
-            return true;
+            if(empty($user_email)) {
+                Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED_WITHOUT_EMAIL'));
+                return true;
+            } else {
+                Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
+                return true;
+            }
+
         }
 
         // if verification email sending failed: instantly delete the user
@@ -141,9 +156,9 @@ class RegistrationModel
      */
     public static function validateUserEmail($user_email, $user_email_repeat)
     {
+        // remove email error message if email is empty as its not required anymore
         if (empty($user_email)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_EMAIL_FIELD_EMPTY'));
-            return false;
+            return true;
         }
 
         if ($user_email !== $user_email_repeat) {
@@ -256,9 +271,13 @@ class RegistrationModel
             Config::get('EMAIL_VERIFICATION_FROM_NAME'), Config::get('EMAIL_VERIFICATION_SUBJECT'), $body
         );
 
-        if ($mail_sent) {
-            Session::add('feedback_positive', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL'));
-            return true;
+        if ($mail_sent || empty($user_email)) {
+            if(empty($user_email)){
+                return true;
+            } else {
+                Session::add('feedback_positive', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL'));
+                return true;
+            }
         } else {
             Session::add('feedback_negative', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR') . $mail->getError() );
             return false;
