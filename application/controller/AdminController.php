@@ -31,6 +31,10 @@ class AdminController extends Controller
             Request::post('suspension'), Request::post('softDelete'), Request::post('user_id')
         );
 
+        if(Request::post('userRolesBox')) {
+            AdminModel::changeUserRole(Request::post('userRolesBox'), Request::post('user_id'));
+        }
+
         Redirect::to("admin");
     }
 }
