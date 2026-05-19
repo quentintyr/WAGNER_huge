@@ -1,4 +1,14 @@
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#users-table').DataTable();
+    });
+</script>
+
 <div class="container">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
     <h1>ProfileController/index</h1>
     <div class="box">
 
@@ -11,7 +21,7 @@
             build things that use profile information of one or multiple/all users.
         </div>
         <div>
-            <table class="overview-table">
+            <table id="users-table" class="overview-table">
                 <thead>
                 <tr>
                     <td>Id</td>
@@ -19,6 +29,7 @@
                     <td>Username</td>
                     <td>User's email</td>
                     <td>Activated ?</td>
+                    <td>Group</td>
                     <td>Link to user's profile</td>
                 </tr>
                 </thead>
@@ -33,6 +44,7 @@
                         <td><?= $user->user_name; ?></td>
                         <td><?= $user->user_email; ?></td>
                         <td><?= ($user->user_active == 0 ? 'No' : 'Yes'); ?></td>
+                        <td><?= $user->user_account_type_name; ?></td>
                         <td>
                             <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
                         </td>

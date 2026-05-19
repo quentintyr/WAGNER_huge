@@ -1,4 +1,13 @@
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#users-table').DataTable();
+    });
+</script>
+
 <div class="container">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
     <h1>Admin/index</h1>
 
     <div class="box">
@@ -13,7 +22,7 @@
             or suspend a user.
         </div>
         <div>
-            <table class="overview-table">
+            <table id="users-table" class="overview-table">
                 <thead>
                 <tr>
                     <td>Id</td>
@@ -21,8 +30,8 @@
                     <td>Username</td>
                     <td>User's email</td>
                     <td>Active</td>
-                    <td>Role</td>
                     <td>Profile Link</td>
+                    <td>Role</td>
                     <td>Suspension Time</td>
                     <td>Soft delete</td>
                     <td>Submit</td>
@@ -40,21 +49,19 @@
                         <td><?= $user->user_email; ?></td>
                         <td><?= ($user->user_active == 0 ? 'No' : 'Yes'); ?></td>
                         <td>
-                        <form>
-                            <select class="form-control" name="userRolesBox">
-                                <?php foreach ($this->roles as $roles) { ?>
-                                    <option value="<?= ($roles->user_account_type); ?>"
-                                        <?php if ($roles->user_account_type == $user->user_account_type) { ?> selected <?php } ?>>
-                                        <?= UserRoleModel::getRoleName($roles->user_account_type); ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </form>
-                        </td>
-                        <td>
                             <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>">Profile</a>
                         </td>
                         <form action="<?= config::get("URL"); ?>admin/actionAccountSettings" method="post">
+                            <td>
+                                <select class="form-control" name="userRolesBox">
+                                    <?php foreach ($this->roles as $roles) { ?>
+                                        <option value="<?= ($roles->user_account_type); ?>"
+                                            <?php if ($roles->user_account_type == $user->user_account_type) { ?> selected <?php } ?>>
+                                            <?= UserRoleModel::getRoleName($roles->user_account_type); ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </td>
                             <td><input type="number" name="suspension" /></td>
                             <td><input type="checkbox" name="softDelete" <?php if ($user->user_deleted) { ?> checked <?php } ?> /></td>
                             <td>
